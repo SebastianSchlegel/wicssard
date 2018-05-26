@@ -25,25 +25,25 @@ import java.util.stream.Collectors;
 
 public class Wicssard extends Application {
 
-    final static Logger LOGGER = Logger.getLogger("Wicssard");
+    private final static Logger LOGGER = Logger.getLogger("Wicssard");
 
-    final CssParser cssParser = new CssParser();
+    private final CssParser cssParser = new CssParser();
 
-    final FlowPane colorWidgets = new FlowPane();
+    private final FlowPane colorWidgets = new FlowPane();
 
-    final ScrollPane sp = new ScrollPane(this.colorWidgets);
+    private final ScrollPane sp = new ScrollPane(this.colorWidgets);
 
-    final ColorPicker colorPicker = new ColorPicker();
+    private final ColorPicker colorPicker = new ColorPicker();
 
-    final Label toolBarInfoLabel = new Label();
+    private final Label toolBarInfoLabel = new Label();
 
-    final Label statusBar = new Label();
+    private final Label statusBar = new Label();
 
-    Rectangle leadingColorWidget;
+    private Rectangle leadingColorWidget;
 
-    CSSStyleSheet styleSheet;
+    private CSSStyleSheet styleSheet;
 
-    final Set<Rectangle> selectedColorWidgets = new HashSet<>();
+    private final Set<Rectangle> selectedColorWidgets = new HashSet<>();
 
     public static void main (final String[] args) {
         LOGGER.info("Starting up..");
@@ -110,6 +110,9 @@ public class Wicssard extends Application {
             this.updateStatus();
         });
 
+        final Button info = new Button("Info");
+        info.setOnAction(event -> MessageBoxUtils.showInfo());
+
         this.colorPicker.setOnAction(event -> {
             if (this.colorPicker.getUserData() instanceof Rectangle) {
                 final Rectangle rectangle = (Rectangle) this.colorPicker.getUserData();
@@ -127,6 +130,7 @@ public class Wicssard extends Application {
         toolBar.getItems().add(deselectAll);
         toolBar.getItems().add(this.colorPicker);
         toolBar.getItems().add(this.toolBarInfoLabel);
+        toolBar.getItems().add(info);
 
         final ScrollPane bottomScrollPane = new ScrollPane();
         bottomScrollPane.setContent(this.statusBar);
@@ -155,8 +159,9 @@ public class Wicssard extends Application {
             this.cssParser.parseColors(cssStyleSheet);
             fileReader.close();
             return cssStyleSheet;
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             LOGGER.severe("Parsing failed: " + e.toString());
+            MessageBoxUtils.showError("Could not parse file " + fileName, e);
             return null;
         }
     }

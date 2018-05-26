@@ -26,17 +26,13 @@ public class CssParser {
 
     private final static CSSFormat cssFormat = new CSSFormat().setRgbAsHex(true);
 
-    public CSSStyleSheet parseCss (final Reader reader) {
+    public CSSStyleSheet parseCss (final Reader reader) throws IOException {
         CSSStyleSheet sheet = null;
-        try {
-            final InputSource source = new InputSource(reader);
-            final CSSOMParser parser = new CSSOMParser(new SACParserCSS3());
+        final InputSource source = new InputSource(reader);
+        final CSSOMParser parser = new CSSOMParser(new SACParserCSS3());
 
-            sheet = parser.parseStyleSheet(source, null, null);
-            LOGGER.info("Parsed css with " + String.valueOf(sheet.getCssRules().getLength()) + " rules.");
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
+        sheet = parser.parseStyleSheet(source, null, null);
+        LOGGER.info("Parsed css with " + String.valueOf(sheet.getCssRules().getLength()) + " rules.");
         return sheet;
     }
 
@@ -65,6 +61,9 @@ public class CssParser {
             }
         }
         LOGGER.info("Found " + this.colors.size() + " colors");
+        if (this.colors.size() == 0) {
+            throw new RuntimeException("No colors found. May this be no CSS file?");
+        }
     }
 
     public Map<RgbColor, ColorModel> getColors () {
