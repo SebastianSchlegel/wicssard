@@ -32,7 +32,10 @@ public class CssParser {
         final CSSOMParser parser = new CSSOMParser(new SACParserCSS3());
 
         sheet = parser.parseStyleSheet(source, null, null);
-        LOGGER.info("Parsed css with " + String.valueOf(sheet.getCssRules().getLength()) + " rules.");
+        LOGGER.info("Parsed file with " + String.valueOf(sheet.getCssRules().getLength()) + " rules.");
+        if (sheet.getCssRules().getLength() == 0) {
+            throw new RuntimeException("No rules found. May this be no CSS file?");
+        }
         return sheet;
     }
 
@@ -62,7 +65,7 @@ public class CssParser {
         }
         LOGGER.info("Found " + this.colors.size() + " colors");
         if (this.colors.size() == 0) {
-            throw new RuntimeException("No colors found. May this be no CSS file?");
+            throw new RuntimeException("No colors found.");
         }
     }
 
